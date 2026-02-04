@@ -797,20 +797,20 @@ def main() -> None:
             white-space: nowrap !important;
             line-height: 32px !important;
         }
-        /* Button styling - 1:5 height to width ratio (40px x 200px) */
+        /* Button styling - 1:5 height to width ratio (20px x 100px) */
         .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type button {
             box-sizing: border-box !important;
-            height: 40px !important;
-            min-height: 40px !important;
-            max-height: 40px !important;
-            width: 200px !important;
-            min-width: 200px !important;
-            max-width: 200px !important;
+            height: 20px !important;
+            min-height: 20px !important;
+            max-height: 20px !important;
+            width: 100px !important;
+            min-width: 100px !important;
+            max-width: 100px !important;
             padding: 0 !important;
-            font-size: 18px !important;
-            border-radius: 10px !important;
+            font-size: 12px !important;
+            border-radius: 5px !important;
             font-weight: 500 !important;
-            line-height: 40px !important;
+            line-height: 20px !important;
             margin: 0 !important;
             display: inline-flex !important;
             align-items: center !important;
@@ -830,19 +830,19 @@ def main() -> None:
         .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type .stMarkdown {
             margin: 0 !important;
             padding: 0 !important;
-            margin-right: 30px !important;
+            margin-right: 15px !important;
         }
         .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type .stButton {
-            margin: 0 20px 0 0 !important;
+            margin: 0 10px 0 0 !important;
             padding: 0 !important;
-            width: 200px !important;
+            width: 100px !important;
         }
         .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type .stButton > button {
             width: 100% !important;
         }
         /* Add gap between buttons specifically */
         .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type [data-testid="column"]:nth-child(2) {
-            margin-right: 20px !important;
+            margin-right: 10px !important;
         }
 
         /* Dialog overlay - light background */
@@ -893,7 +893,7 @@ def main() -> None:
         edit_person_dialog_with_target(data, people, target)
 
     # Unified header with title and buttons (buttons on left next to title)
-    title_col, add_col, edit_col, spacer = st.columns([0.15, 0.16, 0.16, 0.53])
+    title_col, add_col, edit_col, spacer = st.columns([0.15, 0.10, 0.10, 0.65])
     with title_col:
         st.markdown("### 🌳 Family Tree")
     with add_col:
