@@ -474,120 +474,185 @@ def _find_spouse(data: dict, target: str, people: dict) -> str | None:
     return None
 
 
+@st.dialog("Add Person")
+def add_person_dialog(data: dict, people: dict):
+    """Dialog for adding a new person."""
+    name = st.text_input("Name *", placeholder="Full name")
+
+    col1, col2 = st.columns(2)
+    with col1:
+        gender = st.selectbox("Gender", ["male", "female"])
+    with col2:
+        birth = st.text_input("Birth Year", placeholder="e.g. 1980")
+
+    death = st.text_input("Death Year", placeholder="Leave blank if alive")
+
+    if people:
+        people_opts = {"": "-- New root (no relation) --"}
+        people_opts.update({pid: p.get("name", pid) for pid, p in people.items()})
+        keys = list(people_opts.keys())
+
+        related_to = st.selectbox("Related to", options=keys, format_func=lambda x: people_opts[x])
+
+        if related_to:
+            relation = st.selectbox("Relationship type", ["child", "parent", "spouse"],
+                                   help="child = new person is child of selected\nparent = new person is parent of selected\nspouse = married to selected")
+        else:
+            relation = None
+    else:
+        related_to = None
+        relation = None
+
+    col3, col4 = st.columns(2)
+    with col3:
+        if st.button("➕ Add Person", use_container_width=True, type="primary"):
+            if name.strip():
+                pid = uuid.uuid4().hex[:8]
+                data["people"][pid] = {
+                    "name": name.strip(),
+                    "gender": gender,
+                    "image_path": None,
+                    "birth_year": birth.strip() or None,
+                    "death_year": death.strip() or None,
+                }
+                if relation and related_to and related_to in people:
+                    if relation == "child":
+                        add_edge(data, related_to, pid)
+                        spouse = _find_spouse(data, related_to, people)
+                        if spouse and spouse in people:
+                            add_edge(data, spouse, pid)
+                    elif relation == "parent":
+                        add_edge(data, pid, related_to)
+                    elif relation == "spouse":
+                        add_spouse(data, related_to, pid)
+                save_data(data)
+                st.rerun()
+            else:
+                st.error("Name is required")
+    with col4:
+        if st.button("Cancel", use_container_width=True):
+            st.rerun()
+
+
+@st.dialog("Edit Person")
+def edit_person_dialog(data: dict, people: dict):
+    """Dialog for editing an existing person."""
+    if not people:
+        st.info("No people to edit. Add someone first!")
+        if st.button("Close"):
+            st.rerun()
+        return
+
+    people_opts = {pid: p.get("name", pid) for pid, p in people.items()}
+    keys = list(people_opts.keys())
+
+    edit_id = st.selectbox("Select person to edit", options=keys, format_func=lambda x: people_opts[x])
+
+    if edit_id:
+        person = people[edit_id]
+
+        edit_name = st.text_input("Name *", value=person.get("name", ""))
+
+        col1, col2 = st.columns(2)
+        with col1:
+            g_opts = ["male", "female"]
+            g_idx = g_opts.index(person.get("gender", "male")) if person.get("gender") in g_opts else 0
+            edit_gender = st.selectbox("Gender", g_opts, index=g_idx)
+        with col2:
+            edit_birth = st.text_input("Birth Year", value=person.get("birth_year") or "")
+
+        edit_death = st.text_input("Death Year", value=person.get("death_year") or "")
+
+        col3, col4, col5 = st.columns(3)
+        with col3:
+            if st.button("💾 Save", use_container_width=True, type="primary"):
+                if edit_name.strip():
+                    data["people"][edit_id]["name"] = edit_name.strip()
+                    data["people"][edit_id]["gender"] = edit_gender
+                    data["people"][edit_id]["birth_year"] = edit_birth.strip() or None
+                    data["people"][edit_id]["death_year"] = edit_death.strip() or None
+                    save_data(data)
+                    st.rerun()
+                else:
+                    st.error("Name is required")
+        with col4:
+            if st.button("🗑️ Delete", use_container_width=True):
+                del data["people"][edit_id]
+                data["edges"] = [e for e in data["edges"] if edit_id not in e]
+                data["spouses"] = [s for s in data.get("spouses", []) if edit_id not in s]
+                save_data(data)
+                st.rerun()
+        with col5:
+            if st.button("Cancel", use_container_width=True):
+                st.rerun()
+
+
 def main() -> None:
     """Main application entry point."""
     st.set_page_config(
         page_title="Family Tree",
         page_icon="🌳",
         layout="wide",
-        initial_sidebar_state="expanded"
+        initial_sidebar_state="collapsed"
     )
 
-    # Custom CSS for layout - smaller sidebar with better text visibility
+    # Custom CSS for clean layout
     st.markdown("""
         <style>
         #MainMenu,footer,header,[data-testid=stToolbar]{visibility:hidden;height:0}
-        .block-container{padding:0!important;max-width:100%!important}
+        .block-container{padding:0.5rem 1rem!important;max-width:100%!important}
         [data-testid=stAppViewContainer]{padding:0!important}
         iframe{border:none!important}
 
-        /* Smaller sidebar */
+        /* Hide sidebar completely */
         [data-testid="stSidebar"] {
-            background: #f8f9fa;
-            padding-top: 0.5rem;
-            min-width: 280px !important;
-            max-width: 300px !important;
-        }
-        [data-testid="stSidebar"] .block-container {
-            padding: 0.5rem !important;
+            display: none !important;
         }
 
-        /* Form labels - make them visible */
-        [data-testid="stSidebar"] label {
-            color: #333 !important;
-            font-weight: 500 !important;
-            font-size: 0.85rem !important;
-            margin-bottom: 0.2rem !important;
-        }
-
-        /* Input fields */
-        [data-testid="stSidebar"] .stTextInput input {
-            padding: 0.5rem;
-            font-size: 0.9rem;
-            background: white !important;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            color: #333 !important;
-            caret-color: #333 !important;
-        }
-        [data-testid="stSidebar"] .stTextInput input:focus {
-            outline: 2px solid #6366f1 !important;
-            border-color: #6366f1 !important;
-        }
-        [data-testid="stSidebar"] .stTextInput input::placeholder {
-            color: #999 !important;
-        }
-
-        /* Select boxes - fix alignment */
-        [data-testid="stSidebar"] .stSelectbox {
-            width: 100% !important;
-        }
-        [data-testid="stSidebar"] .stSelectbox > div {
-            width: 100% !important;
-        }
-        [data-testid="stSidebar"] .stSelectbox > div > div {
-            padding: 0.5rem;
-            font-size: 0.9rem;
-            background: white !important;
-            color: #333 !important;
-            min-height: 38px;
+        /* Header buttons styling */
+        .header-buttons {
+            position: fixed;
+            top: 10px;
+            right: 20px;
+            z-index: 1000;
             display: flex;
-            align-items: center;
+            gap: 10px;
         }
-        [data-testid="stSidebar"] .stSelectbox [data-baseweb="select"] span {
-            color: #333 !important;
-        }
-        [data-testid="stSidebar"] .stSelectbox svg {
-            fill: #333 !important;
-        }
-
-        /* Tab labels - always visible */
-        [data-testid="stSidebar"] [data-baseweb="tab-list"] {
-            gap: 0 !important;
-        }
-        [data-testid="stSidebar"] button[data-baseweb="tab"] {
-            font-size: 0.9rem !important;
-            padding: 0.5rem 1rem !important;
-            color: #333 !important;
-            background: transparent !important;
-            border-bottom: 2px solid transparent !important;
-        }
-        [data-testid="stSidebar"] button[data-baseweb="tab"][aria-selected="true"] {
-            color: #ef4444 !important;
-            border-bottom: 2px solid #ef4444 !important;
-        }
-        [data-testid="stSidebar"] button[data-baseweb="tab"]:hover {
-            color: #ef4444 !important;
+        .header-buttons button {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
         }
 
-        /* Column alignment fix */
-        [data-testid="stSidebar"] [data-testid="stHorizontalBlock"] {
-            gap: 0.5rem !important;
-            align-items: flex-end !important;
+        /* Dialog overlay - light background */
+        [data-testid="stModal"] {
+            background: rgba(241, 245, 249, 0.85) !important;
         }
-        [data-testid="stSidebar"] [data-testid="column"] > div {
-            width: 100% !important;
+        /* Reset all intermediate containers */
+        [data-testid="stModal"] > div,
+        [data-testid="stModal"] > div > div {
+            position: static !important;
+            display: contents !important;
         }
-
-        /* Buttons */
-        [data-testid="stSidebar"] .stButton button {
-            padding: 0.5rem 1rem;
-            font-size: 0.85rem;
+        /* Dialog box - absolute center using transform */
+        [data-testid="stDialog"] {
+            position: fixed !important;
+            top: 50% !important;
+            left: 50% !important;
+            transform: translate(-50%, -50%) !important;
+            max-width: 420px !important;
+            width: 90vw !important;
+            max-height: 85vh !important;
+            overflow-y: auto !important;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12) !important;
+            border-radius: 12px !important;
+            background: white !important;
+            margin: 0 !important;
         }
-
-        /* Column gaps */
-        [data-testid="stSidebar"] [data-testid="column"] {
-            padding: 0 0.25rem;
+        [data-testid="stDialog"] [data-testid="stVerticalBlock"] {
+            gap: 1rem !important;
         }
         </style>
     """, unsafe_allow_html=True)
@@ -597,116 +662,18 @@ def main() -> None:
     data = load_data()
     people = data.get("people", {})
 
-    # Sidebar with tabs - no page reloads needed
-    with st.sidebar:
-        tab1, tab2 = st.tabs(["➕ Add", "✏️ Edit"])
-
-        with tab1:
-            # ADD PERSON FORM
-            with st.form("add_form", clear_on_submit=True):
-                name = st.text_input("Name *", placeholder="Full name")
-
-                col1, col2 = st.columns(2)
-                with col1:
-                    gender = st.selectbox("Gender", ["male", "female"])
-                with col2:
-                    birth = st.text_input("Birth", placeholder="Year")
-
-                death = st.text_input("Death", placeholder="Year (blank if alive)")
-
-                if people:
-                    people_opts = {"": "-- New root --"}
-                    people_opts.update({pid: p.get("name", pid)[:20] for pid, p in people.items()})
-                    keys = list(people_opts.keys())
-
-                    col3, col4 = st.columns(2)
-                    with col3:
-                        related_to = st.selectbox("Relative of", options=keys, format_func=lambda x: people_opts[x])
-                    with col4:
-                        relation = st.selectbox("Relationship", ["child", "parent", "spouse"],
-                                               help="child=new person is child of selected, parent=new person is parent of selected, spouse=married to selected")
-                else:
-                    related_to = None
-                    relation = None
-
-                if st.form_submit_button("➕ Add", use_container_width=True, type="primary"):
-                    if name.strip():
-                        pid = uuid.uuid4().hex[:8]
-                        data["people"][pid] = {
-                            "name": name.strip(),
-                            "gender": gender,
-                            "image_path": None,
-                            "birth_year": birth.strip() or None,
-                            "death_year": death.strip() or None,
-                        }
-                        if relation and related_to and related_to in people:
-                            if relation == "child":
-                                add_edge(data, related_to, pid)
-                                spouse = _find_spouse(data, related_to, people)
-                                if spouse and spouse in people:
-                                    add_edge(data, spouse, pid)
-                            elif relation == "parent":
-                                add_edge(data, pid, related_to)
-                            elif relation == "spouse":
-                                add_spouse(data, related_to, pid)
-                        save_data(data)
-                        st.rerun()
-                    else:
-                        st.error("Name required")
-
-        with tab2:
-            # EDIT PERSON FORM
-            if people:
-                people_opts = {pid: p.get("name", pid)[:20] for pid, p in people.items()}
-                keys = list(people_opts.keys())
-
-                edit_id = st.selectbox("Select person", options=keys, format_func=lambda x: people_opts[x])
-
-                if edit_id:
-                    person = people[edit_id]
-
-                    with st.form("edit_form"):
-                        edit_name = st.text_input("Name *", value=person.get("name", ""))
-
-                        col1, col2 = st.columns(2)
-                        with col1:
-                            g_opts = ["male", "female"]
-                            g_idx = g_opts.index(person.get("gender", "male")) if person.get("gender") in g_opts else 0
-                            edit_gender = st.selectbox("Gender", g_opts, index=g_idx)
-                        with col2:
-                            edit_birth = st.text_input("Birth", value=person.get("birth_year") or "")
-
-                        edit_death = st.text_input("Death", value=person.get("death_year") or "")
-
-                        col3, col4 = st.columns(2)
-                        with col3:
-                            save = st.form_submit_button("💾 Save", use_container_width=True, type="primary")
-                        with col4:
-                            delete = st.form_submit_button("🗑️", use_container_width=True)
-
-                        if save:
-                            if edit_name.strip():
-                                data["people"][edit_id]["name"] = edit_name.strip()
-                                data["people"][edit_id]["gender"] = edit_gender
-                                data["people"][edit_id]["birth_year"] = edit_birth.strip() or None
-                                data["people"][edit_id]["death_year"] = edit_death.strip() or None
-                                save_data(data)
-                                st.rerun()
-                            else:
-                                st.error("Name required")
-
-                        if delete:
-                            del data["people"][edit_id]
-                            data["edges"] = [e for e in data["edges"] if edit_id not in e]
-                            data["spouses"] = [s for s in data.get("spouses", []) if edit_id not in s]
-                            save_data(data)
-                            st.rerun()
-            else:
-                st.info("Add someone first!")
+    # Header with buttons
+    col1, col2, col3 = st.columns([6, 1, 1])
+    with col2:
+        if st.button("➕ Add", use_container_width=True, type="primary"):
+            add_person_dialog(data, people)
+    with col3:
+        if st.button("✏️ Edit", use_container_width=True):
+            edit_person_dialog(data, people)
 
     # Render the tree using Streamlit components
     tree_html = build_tree_html(data)
-    components.html(tree_html, height=900, scrolling=True)
+    components.html(tree_html, height=850, scrolling=True)
 
 
 if __name__ == "__main__":
