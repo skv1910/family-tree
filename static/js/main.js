@@ -6,7 +6,6 @@ var inner = document.getElementById('inner');
 
 // State
 var scale = 1;
-var selectedId = null;
 
 /**
  * Update the transform scale of the canvas
@@ -42,77 +41,49 @@ function resetView() {
 }
 
 /**
- * Open the add person modal
- * @param {string|null} pid - Person ID to add relative to, or null for new root
+ * Open the add form for a specific person
+ * This sets a query parameter and triggers Streamlit to open the sidebar
+ * @param {string} personId - The ID of the person to add relative to
  */
-function openModal(pid) {
-    selectedId = pid;
-    document.getElementById('mtitle').textContent = pid ? 'Add Relative' : 'Add Person';
-    document.getElementById('frel').value = pid ? 'child' : 'root';
-    document.getElementById('modal').classList.add('open');
-    document.getElementById('fname').focus();
-}
-
-/**
- * Close the modal and reset form
- */
-function closeModal() {
-    document.getElementById('modal').classList.remove('open');
-    document.getElementById('fname').value = '';
-    document.getElementById('fbirth').value = '';
-    document.getElementById('fdeath').value = '';
-}
-
-/**
- * Submit the form to add a new person
- */
-function submit() {
-    var name = document.getElementById('fname').value.trim();
-    if (!name) {
-        alert('Name is required');
-        return;
-    }
-
+function openAddForm(personId) {
+    // Set query parameter to pass the target person to Streamlit
     var params = new URLSearchParams();
-    params.set('action', 'add');
-    params.set('name', name);
-    params.set('gender', document.getElementById('fgender').value);
-    params.set('relation', document.getElementById('frel').value);
-
-    if (selectedId) {
-        params.set('target', selectedId);
-    }
-
-    var birth = document.getElementById('fbirth').value.trim();
-    var death = document.getElementById('fdeath').value.trim();
-    if (birth) params.set('birth', birth);
-    if (death) params.set('death', death);
-
-    // Navigate to trigger Streamlit rerun with query params
-    // Use top-level window to handle both local and deployed Streamlit
+    params.set('target', personId);
+    
+    // Navigate to open sidebar with target pre-selected
+    // Use postMessage to communicate with Streamlit parent
     try {
-        var targetWindow = window.top || window.parent;
-        var baseUrl = targetWindow.location.origin + targetWindow.location.pathname;
-        targetWindow.location.href = baseUrl + '?' + params.toString();
+        // First, try to open the sidebar
+        var sidebarButton = window.parent.document.querySelector('[data-testid="collapsedControl"]');
+        if (sidebarButton) {
+            sidebarButton.click();
+        }
+        
+        // Then update the URL with target parameter
+        var newUrl = window.parent.location.pathname + '?' + params.toString();
+        window.parent.history.pushState({}, '', newUrl);
+        
+        // Trigger Streamlit rerun
+        window.parent.postMessage({type: 'streamlit:rerun'}, '*');
+        
+        // Fallback: reload the parent page
+        setTimeout(function() {
+            window.parent.location.href = newUrl;
+        }, 100);
     } catch (e) {
-        // Fallback for cross-origin restrictions
+        // Cross-origin fallback - just reload with params
+        alert('Opening add form for this person. The sidebar will open.');
         window.parent.location.href = window.parent.location.pathname + '?' + params.toString();
     }
 }
 
-// Event Listeners
+// Keyboard shortcuts
 document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-        closeModal();
-    }
-    if (e.key === 'Enter' && document.getElementById('modal').classList.contains('open')) {
-        submit();
-    }
-});
-
-// Close modal when clicking outside
-document.getElementById('modal').addEventListener('click', function(e) {
-    if (e.target === this) {
-        closeModal();
+    if (e.key === '+' || e.key === '=') {
+        zoomIn();
+    } else if (e.key === '-') {
+        zoomOut();
+    } else if (e.key === '0') {
+        resetView();
     }
 });

@@ -350,7 +350,7 @@ def build_node_svg(pid: str, x: float, y: float, person: dict, color: str) -> st
         <circle cx="{NODE_W/2}" cy="45" r="35" fill="none" stroke="{color}" stroke-width="2"/>
         <text x="{NODE_W/2}" y="100" text-anchor="middle" font-size="11" font-weight="600" fill="#1e293b">{short_name}</text>
         <text x="{NODE_W/2}" y="115" text-anchor="middle" font-size="9" fill="#64748b">{years}</text>
-        <circle class="add-btn" cx="{NODE_W-8}" cy="12" r="10" fill="{color}" onclick="openModal('{esc_pid}')"/>
+        <circle class="add-btn" cx="{NODE_W-8}" cy="12" r="10" fill="{color}" onclick="openAddForm('{esc_pid}')"/>
         <text x="{NODE_W-8}" y="16" text-anchor="middle" fill="white" font-size="14" font-weight="bold" style="pointer-events:none">+</text>
     </g>'''
 
@@ -483,24 +483,96 @@ def main() -> None:
         initial_sidebar_state="collapsed"
     )
 
-    # Hide Streamlit UI elements
-    st.markdown(
-        "<style>#MainMenu,footer,header,[data-testid=stToolbar]{visibility:hidden;height:0}"
-        ".block-container{padding:0!important;max-width:100%!important}"
-        "[data-testid=stAppViewContainer]{padding:0!important}"
-        "iframe{border:none!important}</style>",
-        unsafe_allow_html=True
-    )
+    # Custom CSS for layout
+    st.markdown("""
+        <style>
+        #MainMenu,footer,header,[data-testid=stToolbar]{visibility:hidden;height:0}
+        .block-container{padding:0!important;max-width:100%!important}
+        [data-testid=stAppViewContainer]{padding:0!important}
+        iframe{border:none!important}
+        
+        /* Sidebar styling */
+        [data-testid="stSidebar"] {
+            background: white;
+            padding-top: 1rem;
+        }
+        [data-testid="stSidebar"] .block-container {
+            padding: 1rem !important;
+        }
+        </style>
+    """, unsafe_allow_html=True)
 
     ensure_dirs()
     ensure_placeholder()
     data = load_data()
+    people = data.get("people", {})
 
-    # Handle query parameter actions
+    # Check if we have a target person from query params (clicked + on a node)
     qp = dict(st.query_params)
-    if handle_add_person(data, qp):
-        st.query_params.clear()
-        st.rerun()
+    target_id = qp.get("target")
+    target_name = people.get(target_id, {}).get("name", "") if target_id else ""
+
+    # Sidebar form for adding people (opens when + is clicked on a node)
+    with st.sidebar:
+        if target_name:
+            st.header(f"➕ Add Relative to {target_name}")
+        else:
+            st.header("➕ Add Person")
+        
+        with st.form("add_person_form", clear_on_submit=True):
+            name = st.text_input("Name *", placeholder="Full name")
+            
+            col1, col2 = st.columns(2)
+            with col1:
+                gender = st.selectbox("Gender", ["male", "female"])
+            with col2:
+                # If target is set, default to "child" relation
+                relation_options = ["child", "parent", "spouse"] if target_id else ["root", "child", "parent", "spouse"]
+                relation = st.selectbox("Relation", relation_options)
+            
+            # Target person selector (for relationships) - pre-select if target_id is set
+            target = target_id
+            if relation != "root" and people and not target_id:
+                people_options = {pid: p.get("name", pid) for pid, p in people.items()}
+                target = st.selectbox(
+                    "Related to",
+                    options=list(people_options.keys()),
+                    format_func=lambda x: people_options[x]
+                )
+            
+            col3, col4 = st.columns(2)
+            with col3:
+                birth = st.text_input("Birth Year", placeholder="e.g. 1980")
+            with col4:
+                death = st.text_input("Death Year", placeholder="Leave blank if alive")
+            
+            submitted = st.form_submit_button("Add Person", use_container_width=True, type="primary")
+            
+            if submitted and name.strip():
+                pid = uuid.uuid4().hex[:8]
+                data["people"][pid] = {
+                    "name": name.strip(),
+                    "gender": gender,
+                    "image_path": None,
+                    "birth_year": birth.strip() or None,
+                    "death_year": death.strip() or None,
+                }
+                
+                if relation == "child" and target and target in people:
+                    add_edge(data, target, pid)
+                    spouse = _find_spouse(data, target, people)
+                    if spouse and spouse in people:
+                        add_edge(data, spouse, pid)
+                elif relation == "parent" and target and target in people:
+                    add_edge(data, pid, target)
+                elif relation == "spouse" and target and target in people:
+                    add_spouse(data, target, pid)
+                
+                save_data(data)
+                st.query_params.clear()
+                st.rerun()
+            elif submitted and not name.strip():
+                st.error("Name is required")
 
     # Render the tree
     html = build_tree_html(data)
