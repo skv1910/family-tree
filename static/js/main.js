@@ -41,28 +41,42 @@ function resetView() {
 }
 
 /**
- * Navigate to a URL - tries multiple methods
+ * Navigate to a URL - handles Streamlit iframe context
  * @param {string} url - URL to navigate to
  */
 function goToUrl(url) {
-    // Try top window first (most reliable for iframes with allow-top-navigation)
+    // Get the base URL from the parent window
+    var baseUrl = '';
     try {
-        window.top.location.href = url;
-        return;
+        baseUrl = window.parent.location.origin + window.parent.location.pathname.split('?')[0];
     } catch(e) {
-        console.log('top.location failed:', e);
+        try {
+            baseUrl = window.top.location.origin + window.top.location.pathname.split('?')[0];
+        } catch(e2) {
+            baseUrl = '';
+        }
     }
-    
-    // Try parent window
+
+    var fullUrl = baseUrl + url;
+
+    // Try parent window navigation
     try {
-        window.parent.location.href = url;
+        window.parent.location.href = fullUrl;
         return;
     } catch(e) {
         console.log('parent.location failed:', e);
     }
-    
-    // Last resort - current window (may not escape iframe)
-    window.location.href = url;
+
+    // Try top window
+    try {
+        window.top.location.href = fullUrl;
+        return;
+    } catch(e) {
+        console.log('top.location failed:', e);
+    }
+
+    // Last resort - current window
+    window.location.href = fullUrl;
 }
 
 /**
