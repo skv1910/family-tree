@@ -22,6 +22,27 @@
         </div>
     </div>
 
+    <!-- Streamlit Component Communication -->
+    <script>
+        // Send data back to Streamlit
+        function sendToStreamlit(data) {
+            window.parent.postMessage({
+                isStreamlitMessage: true,
+                type: "streamlit:componentValue", 
+                value: data
+            }, "*");
+        }
+        
+        // Also try the Streamlit object if available
+        function setStreamlitValue(data) {
+            sendToStreamlit(data);
+            // Signal that component height may have changed
+            window.parent.postMessage({
+                isStreamlitMessage: true,
+                type: "streamlit:setFrameHeight"
+            }, "*");
+        }
+    </script>
     <script src="{{JS_URL}}"></script>
 </body>
 </html>

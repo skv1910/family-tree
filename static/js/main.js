@@ -41,40 +41,44 @@ function resetView() {
 }
 
 /**
- * Open the add form for a specific person
- * This sets a query parameter and triggers Streamlit to open the sidebar
+ * Navigate to a URL - tries multiple methods
+ * @param {string} url - URL to navigate to
+ */
+function goToUrl(url) {
+    // Try top window first (most reliable for iframes with allow-top-navigation)
+    try {
+        window.top.location.href = url;
+        return;
+    } catch(e) {
+        console.log('top.location failed:', e);
+    }
+    
+    // Try parent window
+    try {
+        window.parent.location.href = url;
+        return;
+    } catch(e) {
+        console.log('parent.location failed:', e);
+    }
+    
+    // Last resort - current window (may not escape iframe)
+    window.location.href = url;
+}
+
+/**
+ * Open the edit form for a person (when clicking on photo)
+ * @param {string} personId - The ID of the person to edit
+ */
+function openEditForm(personId) {
+    goToUrl('/?mode=edit&target=' + encodeURIComponent(personId));
+}
+
+/**
+ * Open the add form to add a relative (when clicking + button)
  * @param {string} personId - The ID of the person to add relative to
  */
 function openAddForm(personId) {
-    // Set query parameter to pass the target person to Streamlit
-    var params = new URLSearchParams();
-    params.set('target', personId);
-    
-    // Navigate to open sidebar with target pre-selected
-    // Use postMessage to communicate with Streamlit parent
-    try {
-        // First, try to open the sidebar
-        var sidebarButton = window.parent.document.querySelector('[data-testid="collapsedControl"]');
-        if (sidebarButton) {
-            sidebarButton.click();
-        }
-        
-        // Then update the URL with target parameter
-        var newUrl = window.parent.location.pathname + '?' + params.toString();
-        window.parent.history.pushState({}, '', newUrl);
-        
-        // Trigger Streamlit rerun
-        window.parent.postMessage({type: 'streamlit:rerun'}, '*');
-        
-        // Fallback: reload the parent page
-        setTimeout(function() {
-            window.parent.location.href = newUrl;
-        }, 100);
-    } catch (e) {
-        // Cross-origin fallback - just reload with params
-        alert('Opening add form for this person. The sidebar will open.');
-        window.parent.location.href = window.parent.location.pathname + '?' + params.toString();
-    }
+    goToUrl('/?mode=add&target=' + encodeURIComponent(personId));
 }
 
 // Keyboard shortcuts
