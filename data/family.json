@@ -1,0 +1,317 @@
+{
+  "people": {
+    "ganapathi": {
+      "name": "Ganapathi",
+      "gender": "male",
+      "image_path": null,
+      "birth_year": null,
+      "death_year": null
+    },
+    "rukmani": {
+      "name": "Rukmani",
+      "gender": "female",
+      "image_path": null,
+      "birth_year": null,
+      "death_year": null
+    },
+    "jayalakshmi": {
+      "name": "Jayalakshmi",
+      "gender": "female",
+      "image_path": null,
+      "birth_year": null,
+      "death_year": null,
+      "birth_order": 1
+    },
+    "rajapathar": {
+      "name": "Rajapathar",
+      "gender": "male",
+      "image_path": null,
+      "birth_year": null,
+      "death_year": null
+    },
+    "kandhaswamy": {
+      "name": "Kandhaswamy",
+      "gender": "male",
+      "image_path": null,
+      "birth_year": null,
+      "death_year": null,
+      "birth_order": 2
+    },
+    "devanayagi": {
+      "name": "Devanayagi",
+      "gender": "female",
+      "image_path": null,
+      "birth_year": null,
+      "death_year": null
+    },
+    "valli": {
+      "name": "Valli",
+      "gender": "female",
+      "image_path": null,
+      "birth_year": null,
+      "death_year": null,
+      "birth_order": 3
+    },
+    "ramachandran": {
+      "name": "Ramachandran",
+      "gender": "male",
+      "image_path": null,
+      "birth_year": null,
+      "death_year": null
+    },
+    "dhanalakshmi": {
+      "name": "Dhanalakshmi",
+      "gender": "female",
+      "image_path": null,
+      "birth_year": null,
+      "death_year": null,
+      "birth_order": 4
+    },
+    "manoharan": {
+      "name": "Manoharan",
+      "gender": "male",
+      "image_path": null,
+      "birth_year": null,
+      "death_year": null
+    },
+    "tharabai": {
+      "name": "Tharabai",
+      "gender": "female",
+      "image_path": null,
+      "birth_year": null,
+      "death_year": null,
+      "birth_order": 5
+    },
+    "natarajan": {
+      "name": "Natarajan",
+      "gender": "male",
+      "image_path": null,
+      "birth_year": null,
+      "death_year": null
+    },
+    "jagadeesan": {
+      "name": "Jagadeesan",
+      "gender": "male",
+      "image_path": null,
+      "birth_year": null,
+      "death_year": null,
+      "birth_order": 6
+    },
+    "gajalakshmi": {
+      "name": "Gajalakshmi",
+      "gender": "female",
+      "image_path": null,
+      "birth_year": null,
+      "death_year": null
+    },
+    "father": {
+      "name": "T K Shanmuga Sundaram",
+      "gender": "male",
+      "image_path": null,
+      "birth_year": "1969",
+      "death_year": null
+    },
+    "mother": {
+      "name": "C R Sharmila Devi",
+      "gender": "female",
+      "image_path": null,
+      "birth_year": "1976",
+      "death_year": null,
+      "birth_order": 2
+    },
+    "son": {
+      "name": "Keerthivasan S",
+      "gender": "male",
+      "image_path": null,
+      "birth_year": "1999",
+      "death_year": null,
+      "birth_order": 1
+    },
+    "daughter": {
+      "name": "Subiksha Sundar",
+      "gender": "female",
+      "image_path": null,
+      "birth_year": "2001",
+      "death_year": null,
+      "birth_order": 2
+    },
+    "92d392d2": {
+      "name": "K R Balaji",
+      "gender": "male",
+      "image_path": null,
+      "birth_year": null,
+      "death_year": null,
+      "birth_order": 1
+    },
+    "sangeetha": {
+      "name": "Sangeetha",
+      "gender": "female",
+      "image_path": null,
+      "birth_year": null,
+      "death_year": null
+    },
+    "sudharsan_b": {
+      "name": "Sudharsan B",
+      "gender": "male",
+      "image_path": null,
+      "birth_year": null,
+      "death_year": null,
+      "birth_order": 1
+    },
+    "smitha_b": {
+      "name": "Smitha B",
+      "gender": "female",
+      "image_path": null,
+      "birth_year": null,
+      "death_year": null,
+      "birth_order": 2
+    },
+    "dhyaneshwaran": {
+      "name": "Dhyaneshwaran T",
+      "gender": "male",
+      "image_path": null,
+      "birth_year": null,
+      "death_year": null
+    }
+  },
+  "edges": [
+    [
+      "ganapathi",
+      "jayalakshmi"
+    ],
+    [
+      "ganapathi",
+      "kandhaswamy"
+    ],
+    [
+      "ganapathi",
+      "valli"
+    ],
+    [
+      "ganapathi",
+      "dhanalakshmi"
+    ],
+    [
+      "ganapathi",
+      "tharabai"
+    ],
+    [
+      "ganapathi",
+      "jagadeesan"
+    ],
+    [
+      "rukmani",
+      "jayalakshmi"
+    ],
+    [
+      "rukmani",
+      "kandhaswamy"
+    ],
+    [
+      "rukmani",
+      "valli"
+    ],
+    [
+      "rukmani",
+      "dhanalakshmi"
+    ],
+    [
+      "rukmani",
+      "tharabai"
+    ],
+    [
+      "rukmani",
+      "jagadeesan"
+    ],
+    [
+      "valli",
+      "mother"
+    ],
+    [
+      "ramachandran",
+      "mother"
+    ],
+    [
+      "father",
+      "son"
+    ],
+    [
+      "father",
+      "daughter"
+    ],
+    [
+      "mother",
+      "son"
+    ],
+    [
+      "mother",
+      "daughter"
+    ],
+    [
+      "valli",
+      "92d392d2"
+    ],
+    [
+      "ramachandran",
+      "92d392d2"
+    ],
+    [
+      "92d392d2",
+      "sudharsan_b"
+    ],
+    [
+      "92d392d2",
+      "smitha_b"
+    ],
+    [
+      "sangeetha",
+      "sudharsan_b"
+    ],
+    [
+      "sangeetha",
+      "smitha_b"
+    ]
+  ],
+  "spouses": [
+    [
+      "ganapathi",
+      "rukmani"
+    ],
+    [
+      "jayalakshmi",
+      "rajapathar"
+    ],
+    [
+      "kandhaswamy",
+      "devanayagi"
+    ],
+    [
+      "valli",
+      "ramachandran"
+    ],
+    [
+      "dhanalakshmi",
+      "manoharan"
+    ],
+    [
+      "tharabai",
+      "natarajan"
+    ],
+    [
+      "jagadeesan",
+      "gajalakshmi"
+    ],
+    [
+      "father",
+      "mother"
+    ],
+    [
+      "92d392d2",
+      "sangeetha"
+    ],
+    [
+      "daughter",
+      "dhyaneshwaran"
+    ]
+  ]
+}
