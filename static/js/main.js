@@ -89,7 +89,15 @@ function submit() {
     if (death) params.set('death', death);
 
     // Navigate to trigger Streamlit rerun with query params
-    window.parent.location.href = window.parent.location.pathname + '?' + params.toString();
+    // Use top-level window to handle both local and deployed Streamlit
+    try {
+        var targetWindow = window.top || window.parent;
+        var baseUrl = targetWindow.location.origin + targetWindow.location.pathname;
+        targetWindow.location.href = baseUrl + '?' + params.toString();
+    } catch (e) {
+        // Fallback for cross-origin restrictions
+        window.parent.location.href = window.parent.location.pathname + '?' + params.toString();
+    }
 }
 
 // Event Listeners
