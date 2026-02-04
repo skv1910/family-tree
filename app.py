@@ -668,7 +668,7 @@ def add_person_dialog(data: dict, people: dict):
 
 
 @st.dialog("Edit Person")
-def edit_person_dialog(data: dict, people: dict):
+def edit_person_dialog(data: dict, people: dict, preselected_id: str = None):
     """Dialog for editing an existing person."""
     if not people:
         st.info("No people to edit. Add someone first!")
@@ -679,7 +679,12 @@ def edit_person_dialog(data: dict, people: dict):
     people_opts = {pid: p.get("name", pid) for pid, p in people.items()}
     keys = list(people_opts.keys())
 
-    edit_id = st.selectbox("Select person to edit", options=keys, format_func=lambda x: people_opts[x])
+    # Pre-select person if specified
+    default_idx = 0
+    if preselected_id and preselected_id in keys:
+        default_idx = keys.index(preselected_id)
+
+    edit_id = st.selectbox("Select person to edit", options=keys, format_func=lambda x: people_opts[x], index=default_idx)
 
     if edit_id:
         person = people[edit_id]
@@ -734,6 +739,11 @@ def edit_person_dialog(data: dict, people: dict):
                 st.rerun()
 
 
+def edit_person_dialog_with_target(data: dict, people: dict, target_id: str):
+    """Wrapper to call edit dialog with a pre-selected person."""
+    edit_person_dialog(data, people, target_id)
+
+
 def main() -> None:
     """Main application entry point."""
     st.set_page_config(
@@ -743,7 +753,7 @@ def main() -> None:
         initial_sidebar_state="collapsed"
     )
 
-    # Custom CSS for clean layout - no padding, full screen iframe
+    # Custom CSS for clean layout with unified header
     st.markdown("""
         <style>
         #MainMenu,footer,header,[data-testid=stToolbar]{visibility:hidden;height:0}
@@ -756,17 +766,80 @@ def main() -> None:
             display: none !important;
         }
 
+        /* Style the unified header bar */
+        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%) !important;
+            padding: 10px 20px !important;
+            margin: 0 !important;
+            gap: 12px !important;
+            align-items: center !important;
+            display: flex !important;
+            flex-wrap: nowrap !important;
+        }
+        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type [data-testid="column"] {
+            padding: 0 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: flex-end !important;
+            min-height: auto !important;
+        }
+        /* Title column align left */
+        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type [data-testid="column"]:first-child {
+            justify-content: flex-start !important;
+        }
+        /* Remove extra spacing from column content */
+        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type [data-testid="column"] > div {
+            width: auto !important;
+        }
+        /* Title styling */
+        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type h3 {
+            color: white !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            font-size: 18px !important;
+            font-weight: 600 !important;
+            white-space: nowrap !important;
+            line-height: 28px !important;
+        }
+        /* Button styling - 1:5 height to width ratio */
+        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type button {
+            height: 24px !important;
+            min-width: 120px !important;
+            padding: 0 16px !important;
+            font-size: 13px !important;
+            border-radius: 6px !important;
+            font-weight: 500 !important;
+            line-height: 24px !important;
+            margin: 0 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type button[data-testid="baseButton-primary"] {
+            background: linear-gradient(135deg, #22c55e, #16a34a) !important;
+            border: none !important;
+        }
+        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type button[data-testid="baseButton-secondary"] {
+            background: rgba(255,255,255,0.15) !important;
+            color: white !important;
+            border: 1px solid rgba(255,255,255,0.3) !important;
+        }
+        /* Remove default Streamlit element spacing */
+        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type .stMarkdown,
+        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type .stButton {
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
         /* Dialog overlay - light background */
         [data-testid="stModal"] {
             background: rgba(241, 245, 249, 0.85) !important;
         }
-        /* Reset all intermediate containers */
         [data-testid="stModal"] > div,
         [data-testid="stModal"] > div > div {
             position: static !important;
             display: contents !important;
         }
-        /* Dialog box - absolute center using transform */
         [data-testid="stDialog"] {
             position: fixed !important;
             top: 50% !important;
@@ -792,16 +865,31 @@ def main() -> None:
     data = load_data()
     people = data.get("people", {})
 
-    # Create buttons in a tight row next to title using session state
-    col1, col2, spacer = st.columns([0.06, 0.06, 0.88])
-    with col1:
-        if st.button("➕ Add", key="add_btn", type="primary", use_container_width=True):
+    # Check for dialog triggers from URL query params
+    query_params = st.query_params
+    mode = query_params.get("mode", None)
+    target = query_params.get("target", None)
+    dialog = query_params.get("dialog", None)
+
+    if dialog == "add" or mode == "add":
+        st.query_params.clear()
+        add_person_dialog(data, people)
+    elif mode == "edit" and target:
+        st.query_params.clear()
+        edit_person_dialog_with_target(data, people, target)
+
+    # Unified header with title and buttons (buttons on right)
+    title_col, spacer, add_col, edit_col = st.columns([0.15, 0.63, 0.11, 0.11])
+    with title_col:
+        st.markdown("### 🌳 Family Tree")
+    with add_col:
+        if st.button("➕ Add", key="add_btn", type="primary"):
             add_person_dialog(data, people)
-    with col2:
-        if st.button("✏️ Edit", key="edit_btn", use_container_width=True):
+    with edit_col:
+        if st.button("✏️ Edit", key="edit_btn"):
             edit_person_dialog(data, people)
 
-    # Render the tree using Streamlit components
+    # Render the tree using Streamlit components (iframe header hidden via CSS)
     tree_html = build_tree_html(data)
     components.html(tree_html, height=850, scrolling=True)
 

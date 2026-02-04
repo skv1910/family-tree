@@ -6,14 +6,12 @@
     <link rel="stylesheet" href="{{CSS_URL}}">
 </head>
 <body>
-    <div class="header">
-        <h1>🌳 <span>Family Tree</span></h1>
-        <div class="controls">
-            <span class="zoom-label" id="zl">100%</span>
-            <button class="btn btn-light" onclick="zoomOut()">−</button>
-            <button class="btn btn-light" onclick="zoomIn()">+</button>
-            <button class="btn btn-light" onclick="resetView()">Reset</button>
-        </div>
+    <!-- Header is now in Streamlit, only keeping zoom controls floating -->
+    <div class="zoom-controls">
+        <span class="zoom-label" id="zl">100%</span>
+        <button class="btn btn-light" onclick="zoomOut()">−</button>
+        <button class="btn btn-light" onclick="zoomIn()">+</button>
+        <button class="btn btn-light" onclick="resetView()">Reset</button>
     </div>
 
     <div class="canvas" id="canvas">

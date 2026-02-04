@@ -95,6 +95,26 @@ function openAddForm(personId) {
     goToUrl('/?mode=add&target=' + encodeURIComponent(personId));
 }
 
+/**
+ * Open Add Person dialog - navigates parent to trigger Streamlit dialog
+ */
+function openAddDialog() {
+    // Navigate the top window to trigger Streamlit rerun with dialog param
+    var url = window.location.href.split('?')[0].replace(/\/+$/, '');
+    // Go up to the Streamlit app URL
+    var baseUrl = window.top.location.origin + window.top.location.pathname.split('?')[0];
+    window.top.location.href = baseUrl + '?dialog=add';
+}
+
+/**
+ * Open Edit Person dialog - navigates parent to trigger Streamlit dialog
+ */
+function openEditDialog() {
+    // Navigate the top window to trigger Streamlit rerun with dialog param
+    var baseUrl = window.top.location.origin + window.top.location.pathname.split('?')[0];
+    window.top.location.href = baseUrl + '?dialog=edit';
+}
+
 // Keyboard shortcuts
 document.addEventListener('keydown', function(e) {
     if (e.key === '+' || e.key === '=') {
