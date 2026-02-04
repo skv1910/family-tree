@@ -771,7 +771,7 @@ def main() -> None:
             background: linear-gradient(135deg, #1e293b 0%, #334155 100%) !important;
             padding: 12px 24px !important;
             margin: 0 !important;
-            gap: 20px !important;
+            gap: 10px !important;
             align-items: center !important;
             display: flex !important;
             flex-wrap: nowrap !important;
@@ -787,30 +787,35 @@ def main() -> None:
         .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type [data-testid="column"] > div {
             width: auto !important;
         }
-        /* Title styling - larger */
-        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type h3 {
+        /* Title button styling - looks like a title but clickable */
+        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type [data-testid="column"]:first-child button {
+            background: transparent !important;
+            border: none !important;
             color: white !important;
-            margin: 0 !important;
-            padding: 0 !important;
-            font-size: 24px !important;
+            font-size: 20px !important;
             font-weight: 600 !important;
-            white-space: nowrap !important;
-            line-height: 32px !important;
-        }
-        /* Button styling - 1:5 height to width ratio (20px x 100px) */
-        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type button {
-            box-sizing: border-box !important;
-            height: 20px !important;
-            min-height: 20px !important;
-            max-height: 20px !important;
-            width: 100px !important;
-            min-width: 100px !important;
-            max-width: 100px !important;
+            height: auto !important;
+            min-height: auto !important;
+            max-height: none !important;
             padding: 0 !important;
-            font-size: 12px !important;
+            margin: 0 !important;
+            cursor: pointer !important;
+            white-space: nowrap !important;
+        }
+        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type [data-testid="column"]:first-child button:hover {
+            opacity: 0.8 !important;
+        }
+        /* Add/Edit button styling - 1:5 ratio */
+        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type [data-testid="column"]:not(:first-child) button {
+            box-sizing: border-box !important;
+            height: 24px !important;
+            min-height: 24px !important;
+            max-height: 24px !important;
+            padding: 0 12px !important;
+            font-size: 13px !important;
             border-radius: 5px !important;
             font-weight: 500 !important;
-            line-height: 20px !important;
+            line-height: 24px !important;
             margin: 0 !important;
             display: inline-flex !important;
             align-items: center !important;
@@ -821,28 +826,19 @@ def main() -> None:
             background: #f87171 !important;
             border: none !important;
         }
-        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type button[data-testid="baseButton-secondary"] {
+        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type [data-testid="column"]:not(:first-child) button[data-testid="baseButton-secondary"] {
             background: rgba(30, 41, 59, 0.8) !important;
             color: white !important;
             border: 1px solid rgba(255,255,255,0.3) !important;
         }
-        /* Remove default Streamlit element spacing and set fixed button container width */
+        /* Remove default Streamlit element spacing */
         .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type .stMarkdown {
             margin: 0 !important;
             padding: 0 !important;
-            margin-right: 15px !important;
         }
         .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type .stButton {
-            margin: 0 10px 0 0 !important;
+            margin: 0 8px 0 0 !important;
             padding: 0 !important;
-            width: 100px !important;
-        }
-        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type .stButton > button {
-            width: 100% !important;
-        }
-        /* Add gap between buttons specifically */
-        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type [data-testid="column"]:nth-child(2) {
-            margin-right: 10px !important;
         }
 
         /* Dialog overlay - light background */
@@ -892,16 +888,37 @@ def main() -> None:
         st.query_params.clear()
         edit_person_dialog_with_target(data, people, target)
 
-    # Unified header with title and buttons (buttons on left next to title)
-    title_col, add_col, edit_col, spacer = st.columns([0.15, 0.10, 0.10, 0.65])
-    with title_col:
-        st.markdown("### 🌳 Family Tree")
-    with add_col:
-        if st.button("+ Add", key="add_btn", type="primary"):
-            add_person_dialog(data, people)
-    with edit_col:
-        if st.button("Edit", key="edit_btn"):
-            edit_person_dialog(data, people)
+    # Mobile/Desktop toggle in session state
+    if "mobile_view" not in st.session_state:
+        st.session_state.mobile_view = False
+
+    # Unified header with title and buttons
+    if st.session_state.mobile_view:
+        # Mobile layout - stacked
+        title_col, add_col, edit_col = st.columns([0.5, 0.25, 0.25])
+        with title_col:
+            if st.button("🌳 Family Tree 📱", key="title_toggle", help="Switch to Desktop view"):
+                st.session_state.mobile_view = False
+                st.rerun()
+        with add_col:
+            if st.button("Add", key="add_btn", type="primary"):
+                add_person_dialog(data, people)
+        with edit_col:
+            if st.button("Edit", key="edit_btn"):
+                edit_person_dialog(data, people)
+    else:
+        # Desktop layout - horizontal
+        title_col, add_col, edit_col, spacer = st.columns([0.15, 0.08, 0.08, 0.69])
+        with title_col:
+            if st.button("🌳 Family Tree 🖥️", key="title_toggle", help="Switch to Mobile view"):
+                st.session_state.mobile_view = True
+                st.rerun()
+        with add_col:
+            if st.button("Add", key="add_btn", type="primary"):
+                add_person_dialog(data, people)
+        with edit_col:
+            if st.button("Edit", key="edit_btn"):
+                edit_person_dialog(data, people)
 
     # Render the tree using Streamlit components (iframe header hidden via CSS)
     tree_html = build_tree_html(data)
