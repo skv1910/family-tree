@@ -769,9 +769,9 @@ def main() -> None:
         /* Style the unified header bar */
         .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type {
             background: linear-gradient(135deg, #1e293b 0%, #334155 100%) !important;
-            padding: 10px 20px !important;
+            padding: 12px 24px !important;
             margin: 0 !important;
-            gap: 12px !important;
+            gap: 20px !important;
             align-items: center !important;
             display: flex !important;
             flex-wrap: nowrap !important;
@@ -780,55 +780,69 @@ def main() -> None:
             padding: 0 !important;
             display: flex !important;
             align-items: center !important;
-            justify-content: flex-end !important;
-            min-height: auto !important;
-        }
-        /* Title column align left */
-        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type [data-testid="column"]:first-child {
             justify-content: flex-start !important;
+            min-height: auto !important;
         }
         /* Remove extra spacing from column content */
         .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type [data-testid="column"] > div {
             width: auto !important;
         }
-        /* Title styling */
+        /* Title styling - larger */
         .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type h3 {
             color: white !important;
             margin: 0 !important;
             padding: 0 !important;
-            font-size: 18px !important;
+            font-size: 24px !important;
             font-weight: 600 !important;
             white-space: nowrap !important;
-            line-height: 28px !important;
+            line-height: 32px !important;
         }
-        /* Button styling - 1:5 height to width ratio */
+        /* Button styling - 1:5 height to width ratio (40px x 200px) */
         .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type button {
-            height: 24px !important;
-            min-width: 120px !important;
-            padding: 0 16px !important;
-            font-size: 13px !important;
-            border-radius: 6px !important;
+            box-sizing: border-box !important;
+            height: 40px !important;
+            min-height: 40px !important;
+            max-height: 40px !important;
+            width: 200px !important;
+            min-width: 200px !important;
+            max-width: 200px !important;
+            padding: 0 !important;
+            font-size: 18px !important;
+            border-radius: 10px !important;
             font-weight: 500 !important;
-            line-height: 24px !important;
+            line-height: 40px !important;
             margin: 0 !important;
-            display: flex !important;
+            display: inline-flex !important;
             align-items: center !important;
             justify-content: center !important;
+            white-space: nowrap !important;
         }
         .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type button[data-testid="baseButton-primary"] {
-            background: linear-gradient(135deg, #22c55e, #16a34a) !important;
+            background: #f87171 !important;
             border: none !important;
         }
         .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type button[data-testid="baseButton-secondary"] {
-            background: rgba(255,255,255,0.15) !important;
+            background: rgba(30, 41, 59, 0.8) !important;
             color: white !important;
             border: 1px solid rgba(255,255,255,0.3) !important;
         }
-        /* Remove default Streamlit element spacing */
-        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type .stMarkdown,
-        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type .stButton {
+        /* Remove default Streamlit element spacing and set fixed button container width */
+        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type .stMarkdown {
             margin: 0 !important;
             padding: 0 !important;
+            margin-right: 30px !important;
+        }
+        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type .stButton {
+            margin: 0 20px 0 0 !important;
+            padding: 0 !important;
+            width: 200px !important;
+        }
+        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type .stButton > button {
+            width: 100% !important;
+        }
+        /* Add gap between buttons specifically */
+        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type [data-testid="column"]:nth-child(2) {
+            margin-right: 20px !important;
         }
 
         /* Dialog overlay - light background */
@@ -878,15 +892,15 @@ def main() -> None:
         st.query_params.clear()
         edit_person_dialog_with_target(data, people, target)
 
-    # Unified header with title and buttons (buttons on right)
-    title_col, spacer, add_col, edit_col = st.columns([0.15, 0.63, 0.11, 0.11])
+    # Unified header with title and buttons (buttons on left next to title)
+    title_col, add_col, edit_col, spacer = st.columns([0.15, 0.16, 0.16, 0.53])
     with title_col:
         st.markdown("### 🌳 Family Tree")
     with add_col:
-        if st.button("➕ Add", key="add_btn", type="primary"):
+        if st.button("+ Add", key="add_btn", type="primary"):
             add_person_dialog(data, people)
     with edit_col:
-        if st.button("✏️ Edit", key="edit_btn"):
+        if st.button("Edit", key="edit_btn"):
             edit_person_dialog(data, people)
 
     # Render the tree using Streamlit components (iframe header hidden via CSS)
