@@ -805,17 +805,20 @@ def main() -> None:
         .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type [data-testid="column"]:first-child button:hover {
             opacity: 0.8 !important;
         }
-        /* Add/Edit button styling - 1:5 ratio */
+        /* Add/Edit button styling - 1:5 ratio (40px x 200px) */
         .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type [data-testid="column"]:not(:first-child) button {
             box-sizing: border-box !important;
-            height: 24px !important;
-            min-height: 24px !important;
-            max-height: 24px !important;
-            padding: 0 12px !important;
-            font-size: 13px !important;
-            border-radius: 5px !important;
+            height: 40px !important;
+            min-height: 40px !important;
+            max-height: 40px !important;
+            width: 200px !important;
+            min-width: 200px !important;
+            max-width: 200px !important;
+            padding: 0 !important;
+            font-size: 18px !important;
+            border-radius: 10px !important;
             font-weight: 500 !important;
-            line-height: 24px !important;
+            line-height: 40px !important;
             margin: 0 !important;
             display: inline-flex !important;
             align-items: center !important;
@@ -831,13 +834,18 @@ def main() -> None:
             color: white !important;
             border: 1px solid rgba(255,255,255,0.3) !important;
         }
+        /* Button columns align right */
+        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type [data-testid="column"]:nth-child(3),
+        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type [data-testid="column"]:nth-child(4) {
+            justify-content: flex-end !important;
+        }
         /* Remove default Streamlit element spacing */
         .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type .stMarkdown {
             margin: 0 !important;
             padding: 0 !important;
         }
         .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type .stButton {
-            margin: 0 8px 0 0 !important;
+            margin: 0 !important;
             padding: 0 !important;
         }
 
@@ -907,8 +915,8 @@ def main() -> None:
             if st.button("Edit", key="edit_btn"):
                 edit_person_dialog(data, people)
     else:
-        # Desktop layout - horizontal
-        title_col, add_col, edit_col, spacer = st.columns([0.15, 0.08, 0.08, 0.69])
+        # Desktop layout - title left, buttons right
+        title_col, spacer, add_col, edit_col = st.columns([0.15, 0.49, 0.18, 0.18])
         with title_col:
             if st.button("🌳 Family Tree 🖥️", key="title_toggle", help="Switch to Mobile view"):
                 st.session_state.mobile_view = True
