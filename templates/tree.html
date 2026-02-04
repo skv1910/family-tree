@@ -28,11 +28,11 @@
         function sendToStreamlit(data) {
             window.parent.postMessage({
                 isStreamlitMessage: true,
-                type: "streamlit:componentValue", 
+                type: "streamlit:componentValue",
                 value: data
             }, "*");
         }
-        
+
         // Also try the Streamlit object if available
         function setStreamlitValue(data) {
             sendToStreamlit(data);
@@ -42,6 +42,7 @@
                 type: "streamlit:setFrameHeight"
             }, "*");
         }
+
     </script>
     <script src="{{JS_URL}}"></script>
 </body>

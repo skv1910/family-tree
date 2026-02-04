@@ -743,34 +743,17 @@ def main() -> None:
         initial_sidebar_state="collapsed"
     )
 
-    # Custom CSS for clean layout
+    # Custom CSS for clean layout - no padding, full screen iframe
     st.markdown("""
         <style>
         #MainMenu,footer,header,[data-testid=stToolbar]{visibility:hidden;height:0}
-        .block-container{padding:0.5rem 1rem!important;max-width:100%!important}
+        .block-container{padding:0!important;max-width:100%!important}
         [data-testid=stAppViewContainer]{padding:0!important}
         iframe{border:none!important}
 
         /* Hide sidebar completely */
         [data-testid="stSidebar"] {
             display: none !important;
-        }
-
-        /* Header buttons styling */
-        .header-buttons {
-            position: fixed;
-            top: 10px;
-            right: 20px;
-            z-index: 1000;
-            display: flex;
-            gap: 10px;
-        }
-        .header-buttons button {
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-weight: 500;
-            cursor: pointer;
-            border: none;
         }
 
         /* Dialog overlay - light background */
@@ -809,13 +792,13 @@ def main() -> None:
     data = load_data()
     people = data.get("people", {})
 
-    # Header with buttons
-    col1, col2, col3 = st.columns([6, 1, 1])
-    with col2:
-        if st.button("➕ Add", use_container_width=True, type="primary"):
+    # Create buttons in a tight row next to title using session state
+    col1, col2, spacer = st.columns([0.06, 0.06, 0.88])
+    with col1:
+        if st.button("➕ Add", key="add_btn", type="primary", use_container_width=True):
             add_person_dialog(data, people)
-    with col3:
-        if st.button("✏️ Edit", use_container_width=True):
+    with col2:
+        if st.button("✏️ Edit", key="edit_btn", use_container_width=True):
             edit_person_dialog(data, people)
 
     # Render the tree using Streamlit components

@@ -34,12 +34,24 @@ html, body {
     gap: 8px;
 }
 
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
 .header h1 {
     font-size: clamp(14px, 4vw, 18px);
     color: #1e293b;
     display: flex;
     align-items: center;
     gap: 6px;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 8px;
 }
 
 /* Controls */
@@ -79,13 +91,24 @@ html, body {
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    background: linear-gradient(135deg, #ef4444, #f87171);
     color: white;
 }
 
 .btn-primary:hover,
 .btn-primary:active {
     opacity: 0.9;
+}
+
+.btn-secondary {
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+}
+
+.btn-secondary:hover,
+.btn-secondary:active {
+    background: #e2e8f0;
 }
 
 /* Canvas - responsive */
