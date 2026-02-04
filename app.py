@@ -1,6 +1,6 @@
 """
 Family Tree Application - Backend
-A Streamlit-based family tree visualization application.
+A Streamlit-based family tree visualization application with Supabase database.
 """
 
 import base64
@@ -13,6 +13,13 @@ from collections import defaultdict
 import streamlit as st
 import streamlit.components.v1 as components
 from PIL import Image
+
+# Try to import supabase, fall back to JSON if not available
+try:
+    from supabase import create_client, Client
+    SUPABASE_AVAILABLE = True
+except ImportError:
+    SUPABASE_AVAILABLE = False
 
 # Paths
 BASE_DIR = Path(__file__).parent
@@ -33,6 +40,25 @@ COUPLE_GAP = 30
 
 
 # =============================================================================
+# Supabase Connection
+# =============================================================================
+
+def get_supabase_client() -> "Client | None":
+    """Get Supabase client if configured."""
+    if not SUPABASE_AVAILABLE:
+        return None
+
+    try:
+        url = st.secrets.get("SUPABASE_URL")
+        key = st.secrets.get("SUPABASE_KEY")
+        if url and key:
+            return create_client(url, key)
+    except Exception:
+        pass
+    return None
+
+
+# =============================================================================
 # File Operations
 # =============================================================================
 
@@ -50,8 +76,8 @@ def ensure_placeholder() -> None:
         img.save(PLACEHOLDER_PATH, format="PNG")
 
 
-def load_data() -> dict:
-    """Load family data from JSON file."""
+def load_data_from_json() -> dict:
+    """Load family data from local JSON file."""
     ensure_dirs()
     if not DATA_PATH.exists():
         return {"people": {}, "edges": [], "spouses": []}
@@ -63,11 +89,100 @@ def load_data() -> dict:
     return data
 
 
-def save_data(data: dict) -> None:
-    """Save family data to JSON file."""
+def save_data_to_json(data: dict) -> None:
+    """Save family data to local JSON file."""
     DATA_PATH.parent.mkdir(parents=True, exist_ok=True)
     with DATA_PATH.open("w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
+
+
+def load_data_from_supabase(client: "Client") -> dict:
+    """Load family data from Supabase database."""
+    data = {"people": {}, "edges": [], "spouses": []}
+
+    # Load people
+    result = client.table("people").select("*").execute()
+    for row in result.data:
+        data["people"][row["id"]] = {
+            "name": row["name"],
+            "gender": row["gender"],
+            "image_path": row.get("image_path"),
+            "birth_year": row.get("birth_year"),
+            "death_year": row.get("death_year"),
+            "birth_order": row.get("birth_order"),
+        }
+
+    # Load edges (parent-child relationships)
+    result = client.table("edges").select("*").execute()
+    for row in result.data:
+        data["edges"].append([row["parent_id"], row["child_id"]])
+
+    # Load spouses
+    result = client.table("spouses").select("*").execute()
+    for row in result.data:
+        data["spouses"].append([row["person1_id"], row["person2_id"]])
+
+    return data
+
+
+def save_person_to_supabase(client: "Client", pid: str, person: dict) -> None:
+    """Save or update a person in Supabase."""
+    client.table("people").upsert({
+        "id": pid,
+        "name": person.get("name"),
+        "gender": person.get("gender"),
+        "image_path": person.get("image_path"),
+        "birth_year": person.get("birth_year"),
+        "death_year": person.get("death_year"),
+        "birth_order": person.get("birth_order"),
+    }).execute()
+
+
+def delete_person_from_supabase(client: "Client", pid: str) -> None:
+    """Delete a person and their relationships from Supabase."""
+    # Delete edges involving this person
+    client.table("edges").delete().eq("parent_id", pid).execute()
+    client.table("edges").delete().eq("child_id", pid).execute()
+    # Delete spouse relationships
+    client.table("spouses").delete().eq("person1_id", pid).execute()
+    client.table("spouses").delete().eq("person2_id", pid).execute()
+    # Delete the person
+    client.table("people").delete().eq("id", pid).execute()
+
+
+def add_edge_to_supabase(client: "Client", parent_id: str, child_id: str) -> None:
+    """Add a parent-child edge to Supabase."""
+    # Check if edge already exists
+    result = client.table("edges").select("*").eq("parent_id", parent_id).eq("child_id", child_id).execute()
+    if not result.data:
+        client.table("edges").insert({
+            "parent_id": parent_id,
+            "child_id": child_id,
+        }).execute()
+
+
+def add_spouse_to_supabase(client: "Client", person1_id: str, person2_id: str) -> None:
+    """Add a spouse relationship to Supabase."""
+    client.table("spouses").insert({
+        "person1_id": person1_id,
+        "person2_id": person2_id,
+    }).execute()
+
+
+def load_data() -> dict:
+    """Load family data from Supabase or fall back to JSON."""
+    client = get_supabase_client()
+    if client:
+        try:
+            return load_data_from_supabase(client)
+        except Exception as e:
+            st.warning(f"Failed to load from Supabase: {e}. Using local data.")
+    return load_data_from_json()
+
+
+def save_data(data: dict) -> None:
+    """Save family data - for JSON fallback only."""
+    save_data_to_json(data)
 
 
 def load_template(name: str) -> str:
@@ -508,24 +623,42 @@ def add_person_dialog(data: dict, people: dict):
         if st.button("➕ Add Person", use_container_width=True, type="primary"):
             if name.strip():
                 pid = uuid.uuid4().hex[:8]
-                data["people"][pid] = {
+                person_data = {
                     "name": name.strip(),
                     "gender": gender,
                     "image_path": None,
                     "birth_year": birth.strip() or None,
                     "death_year": death.strip() or None,
                 }
-                if relation and related_to and related_to in people:
-                    if relation == "child":
-                        add_edge(data, related_to, pid)
-                        spouse = _find_spouse(data, related_to, people)
-                        if spouse and spouse in people:
-                            add_edge(data, spouse, pid)
-                    elif relation == "parent":
-                        add_edge(data, pid, related_to)
-                    elif relation == "spouse":
-                        add_spouse(data, related_to, pid)
-                save_data(data)
+
+                client = get_supabase_client()
+                if client:
+                    # Save to Supabase
+                    save_person_to_supabase(client, pid, person_data)
+                    if relation and related_to and related_to in people:
+                        if relation == "child":
+                            add_edge_to_supabase(client, related_to, pid)
+                            spouse = _find_spouse(data, related_to, people)
+                            if spouse and spouse in people:
+                                add_edge_to_supabase(client, spouse, pid)
+                        elif relation == "parent":
+                            add_edge_to_supabase(client, pid, related_to)
+                        elif relation == "spouse":
+                            add_spouse_to_supabase(client, related_to, pid)
+                else:
+                    # Fall back to JSON
+                    data["people"][pid] = person_data
+                    if relation and related_to and related_to in people:
+                        if relation == "child":
+                            add_edge(data, related_to, pid)
+                            spouse = _find_spouse(data, related_to, people)
+                            if spouse and spouse in people:
+                                add_edge(data, spouse, pid)
+                        elif relation == "parent":
+                            add_edge(data, pid, related_to)
+                        elif relation == "spouse":
+                            add_spouse(data, related_to, pid)
+                    save_data(data)
                 st.rerun()
             else:
                 st.error("Name is required")
@@ -567,20 +700,34 @@ def edit_person_dialog(data: dict, people: dict):
         with col3:
             if st.button("💾 Save", use_container_width=True, type="primary"):
                 if edit_name.strip():
-                    data["people"][edit_id]["name"] = edit_name.strip()
-                    data["people"][edit_id]["gender"] = edit_gender
-                    data["people"][edit_id]["birth_year"] = edit_birth.strip() or None
-                    data["people"][edit_id]["death_year"] = edit_death.strip() or None
-                    save_data(data)
+                    person_data = {
+                        "name": edit_name.strip(),
+                        "gender": edit_gender,
+                        "image_path": person.get("image_path"),
+                        "birth_year": edit_birth.strip() or None,
+                        "death_year": edit_death.strip() or None,
+                        "birth_order": person.get("birth_order"),
+                    }
+
+                    client = get_supabase_client()
+                    if client:
+                        save_person_to_supabase(client, edit_id, person_data)
+                    else:
+                        data["people"][edit_id].update(person_data)
+                        save_data(data)
                     st.rerun()
                 else:
                     st.error("Name is required")
         with col4:
             if st.button("🗑️ Delete", use_container_width=True):
-                del data["people"][edit_id]
-                data["edges"] = [e for e in data["edges"] if edit_id not in e]
-                data["spouses"] = [s for s in data.get("spouses", []) if edit_id not in s]
-                save_data(data)
+                client = get_supabase_client()
+                if client:
+                    delete_person_from_supabase(client, edit_id)
+                else:
+                    del data["people"][edit_id]
+                    data["edges"] = [e for e in data["edges"] if edit_id not in e]
+                    data["spouses"] = [s for s in data.get("spouses", []) if edit_id not in s]
+                    save_data(data)
                 st.rerun()
         with col5:
             if st.button("Cancel", use_container_width=True):
