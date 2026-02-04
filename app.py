@@ -753,7 +753,7 @@ def main() -> None:
         initial_sidebar_state="collapsed"
     )
 
-    # Custom CSS for clean layout with unified header
+    # Custom CSS for clean layout
     st.markdown("""
         <style>
         #MainMenu,footer,header,[data-testid=stToolbar]{visibility:hidden;height:0}
@@ -766,87 +766,16 @@ def main() -> None:
             display: none !important;
         }
 
-        /* Style the unified header bar */
-        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type {
-            background: linear-gradient(135deg, #1e293b 0%, #334155 100%) !important;
-            padding: 12px 24px !important;
-            margin: 0 !important;
-            gap: 10px !important;
-            align-items: center !important;
-            display: flex !important;
-            flex-wrap: nowrap !important;
-        }
-        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type [data-testid="column"] {
-            padding: 0 !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: flex-start !important;
-            min-height: auto !important;
-        }
-        /* Remove extra spacing from column content */
-        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type [data-testid="column"] > div {
-            width: auto !important;
-        }
-        /* Title button styling - looks like a title but clickable */
-        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type [data-testid="column"]:first-child button {
-            background: transparent !important;
-            border: none !important;
-            color: white !important;
-            font-size: 20px !important;
-            font-weight: 600 !important;
-            height: auto !important;
-            min-height: auto !important;
-            max-height: none !important;
-            padding: 0 !important;
-            margin: 0 !important;
-            cursor: pointer !important;
-            white-space: nowrap !important;
-        }
-        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type [data-testid="column"]:first-child button:hover {
-            opacity: 0.8 !important;
-        }
-        /* Add/Edit button styling - 1:5 ratio (40px x 200px) */
-        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type [data-testid="column"]:not(:first-child) button {
-            box-sizing: border-box !important;
-            height: 40px !important;
-            min-height: 40px !important;
-            max-height: 40px !important;
-            width: 200px !important;
-            min-width: 200px !important;
-            max-width: 200px !important;
-            padding: 0 !important;
-            font-size: 18px !important;
-            border-radius: 10px !important;
-            font-weight: 500 !important;
-            line-height: 40px !important;
-            margin: 0 !important;
-            display: inline-flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            white-space: nowrap !important;
-        }
-        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type button[data-testid="baseButton-primary"] {
+        /* Primary button color (Add) - shared */
+        .stMainBlockContainer button[data-testid="baseButton-primary"] {
             background: #f87171 !important;
             border: none !important;
         }
-        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type [data-testid="column"]:not(:first-child) button[data-testid="baseButton-secondary"] {
+        /* Secondary button color (Edit) - shared */
+        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type button[data-testid="baseButton-secondary"] {
             background: rgba(30, 41, 59, 0.8) !important;
             color: white !important;
             border: 1px solid rgba(255,255,255,0.3) !important;
-        }
-        /* Button columns align right */
-        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type [data-testid="column"]:nth-child(3),
-        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type [data-testid="column"]:nth-child(4) {
-            justify-content: flex-end !important;
-        }
-        /* Remove default Streamlit element spacing */
-        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type .stMarkdown {
-            margin: 0 !important;
-            padding: 0 !important;
-        }
-        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type .stButton {
-            margin: 0 !important;
-            padding: 0 !important;
         }
 
         /* Dialog overlay - light background */
@@ -900,23 +829,161 @@ def main() -> None:
     if "mobile_view" not in st.session_state:
         st.session_state.mobile_view = False
 
+    # Inject view-specific CSS
+    if st.session_state.mobile_view:
+        st.markdown("""<style>
+        /* Mobile title button */
+        .stMainBlockContainer > [data-testid="stVerticalBlock"] > .stElementContainer:nth-child(2) button {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%) !important;
+            border: none !important;
+            color: white !important;
+            font-size: 20px !important;
+            font-weight: 600 !important;
+            padding: 8px 24px !important;
+            width: 100% !important;
+            cursor: pointer !important;
+            border-radius: 0 !important;
+        }
+        /* Mobile button row */
+        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%) !important;
+            padding: 8px 24px !important;
+            margin: 0 !important;
+            gap: 12px !important;
+        }
+        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type button {
+            height: 36px !important;
+            min-height: 36px !important;
+            font-size: 16px !important;
+            border-radius: 8px !important;
+            font-weight: 500 !important;
+        }
+        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type button[data-testid="baseButton-secondary"] {
+            background: rgba(30, 41, 59, 0.8) !important;
+            color: white !important;
+            border: 1px solid rgba(255,255,255,0.3) !important;
+        }
+        </style>""", unsafe_allow_html=True)
+    else:
+        st.markdown("""<style>
+        /* Desktop header bar */
+        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%) !important;
+            padding: 12px 24px !important;
+            margin: 0 !important;
+            gap: 0px !important;
+            align-items: center !important;
+            display: flex !important;
+            flex-wrap: nowrap !important;
+        }
+        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type [data-testid="stColumn"] {
+            padding: 0 !important;
+            display: flex !important;
+            align-items: center !important;
+            min-height: auto !important;
+        }
+        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type .stButton {
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        /* Title column - auto width */
+        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type > [data-testid="stColumn"]:first-child {
+            flex: 0 0 auto !important;
+            width: auto !important;
+            min-width: auto !important;
+            justify-content: flex-start !important;
+        }
+        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type > [data-testid="stColumn"]:first-child > div {
+            width: auto !important;
+        }
+        /* Title button */
+        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type > [data-testid="stColumn"]:first-child button {
+            background: transparent !important;
+            border: none !important;
+            color: white !important;
+            font-size: 20px !important;
+            font-weight: 600 !important;
+            height: auto !important;
+            min-height: auto !important;
+            max-height: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            cursor: pointer !important;
+            white-space: nowrap !important;
+        }
+        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type > [data-testid="stColumn"]:first-child button:hover {
+            opacity: 0.8 !important;
+        }
+        /* Spacer column */
+        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type > [data-testid="stColumn"]:nth-child(2) {
+            flex: 1 1 auto !important;
+        }
+        /* Add button column */
+        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type > [data-testid="stColumn"]:nth-child(3) {
+            justify-content: flex-end !important;
+            flex: 0 0 auto !important;
+            width: auto !important;
+            min-width: auto !important;
+            margin-right: 10px !important;
+        }
+        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type > [data-testid="stColumn"]:nth-child(3) > div {
+            width: auto !important;
+        }
+        /* Edit button column - right edge */
+        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type > [data-testid="stColumn"]:nth-child(4) {
+            justify-content: flex-end !important;
+            flex: 0 0 auto !important;
+            width: auto !important;
+            min-width: auto !important;
+        }
+        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type > [data-testid="stColumn"]:nth-child(4) > div {
+            width: auto !important;
+        }
+        /* Desktop Add/Edit buttons - 40px x 200px */
+        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type > [data-testid="stColumn"]:nth-child(3) button,
+        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type > [data-testid="stColumn"]:nth-child(4) button {
+            box-sizing: border-box !important;
+            height: 40px !important;
+            min-height: 40px !important;
+            max-height: 40px !important;
+            width: 200px !important;
+            min-width: 200px !important;
+            max-width: 200px !important;
+            padding: 0 !important;
+            font-size: 18px !important;
+            border-radius: 10px !important;
+            font-weight: 500 !important;
+            line-height: 40px !important;
+            margin: 0 !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            white-space: nowrap !important;
+        }
+        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type > [data-testid="stColumn"]:nth-child(3) button[data-testid="baseButton-secondary"],
+        .stMainBlockContainer [data-testid="stHorizontalBlock"]:first-of-type > [data-testid="stColumn"]:nth-child(4) button[data-testid="baseButton-secondary"] {
+            background: rgba(30, 41, 59, 0.8) !important;
+            color: white !important;
+            border: 1px solid rgba(255,255,255,0.3) !important;
+        }
+        </style>""", unsafe_allow_html=True)
+
     # Unified header with title and buttons
     if st.session_state.mobile_view:
-        # Mobile layout - stacked
-        title_col, add_col, edit_col = st.columns([0.5, 0.25, 0.25])
-        with title_col:
-            if st.button("🌳 Family Tree 📱", key="title_toggle", help="Switch to Desktop view"):
-                st.session_state.mobile_view = False
-                st.rerun()
+        # Mobile layout - title on top, buttons below 50/50
+        if st.button("🌳 Family Tree 📱", key="title_toggle", help="Switch to Desktop view"):
+            st.session_state.mobile_view = False
+            st.rerun()
+        add_col, edit_col = st.columns(2)
         with add_col:
-            if st.button("Add", key="add_btn", type="primary"):
+            if st.button("Add", key="add_btn", type="primary", use_container_width=True):
                 add_person_dialog(data, people)
         with edit_col:
-            if st.button("Edit", key="edit_btn"):
+            if st.button("Edit", key="edit_btn", use_container_width=True):
                 edit_person_dialog(data, people)
     else:
-        # Desktop layout - title left, buttons right
-        title_col, spacer, add_col, edit_col = st.columns([0.15, 0.49, 0.18, 0.18])
+        # Desktop layout - title left, Add then Edit at right edge
+        title_col, spacer, add_col, edit_col = st.columns([0.15, 0.57, 0.14, 0.14])
         with title_col:
             if st.button("🌳 Family Tree 🖥️", key="title_toggle", help="Switch to Mobile view"):
                 st.session_state.mobile_view = True
