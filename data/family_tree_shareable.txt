@@ -1,0 +1,177 @@
+============================================================
+FAMILY TREE DATA
+Generated: 2026-02-07 15:29:02
+Total Members: 81
+============================================================
+
+FAMILY MEMBERS
+------------------------------------------------------------
+Name                                Gender   Years
+------------------------------------------------------------
+Akkamma                             F        
+Amul                                F        
+Balaji Ganesan                      M        
+Bharathi                            F        
+Bhuvanesh                           M        
+C K Ramachandran                    M        1945-2024
+C R Sharmila Devi                   F        1976-
+Chandran                            M        
+Datchinamoorthy                     M        
+Deivanai                            F        
+Devanand                            M        1976-
+Devanayagi                          F        
+Dhanalakshmi                        F        
+Dhanammal                           F        
+Dhyaneshwaran T                     M        1997-
+G Valliammal                        F        
+Gajalakshmi                         F        
+Ganapathi                           M        
+Gandhi                              M        
+Ganesan                             M        
+Hema                                F        
+Imayaa                              F        2023-
+Jagadeesan                          M        
+Jayalakshmi                         F        
+Jayanthi                            F        
+K R Balaji                          M        
+Kamala                              F        
+Kandaswamy                          M        
+Kannan                              M        
+Karpagam                            F        
+Karpagavalli                        F        
+Karthikeyan                         M        1980-
+Keerthivasan S                      M        1999-
+Kiruthiga                           F        1978-
+Kuppuswamy                          M        
+Lathika                             F        2003-
+Maadhu                              F        
+Mahalakshmi                         F        
+Mahendhar                           M        1996-
+Malarvizhi                          F        
+Manoharan                           M        
+Masilamani                          M        
+Mohan Rangan                        M        
+Mohanavelu                          M        
+Muthulakshmi                        F        
+Natarajan                           M        
+Nithyanandan                        M        
+Nithyanandi                         F        
+Nivedha                             F        1995-
+Parimala                            F        
+Prabhakaran                         M        
+Pranav                              M        2009-
+Preetha                             F        1997-
+Prithviraj                          M        2004-
+Rajabadhar                          M        
+Rajabadhar                          M        
+Ramesh                              M        
+Rukmani                             F        
+Sangeetha                           F        
+Sangeetha                           F        
+Sanjana                             F        
+Saravanan                           M        
+Sasirekha                           F        1982-
+Sekar                               M        
+Smitha B                            F        
+Sowmya                              F        
+Sripaadh                            M        
+Subiksha Sundar                     F        2001-
+Sudharsan B                         M        
+Sugantha                            F        
+Sundaramoorthy                      M        
+T K Shanmuga Sundaram               M        1969-
+Tharabai                            F        
+Usha Rani                           F        
+Vaishali                            F        
+Vaishnavi                           F        
+Vanadatchi                          F        
+Velmurugan                          M        
+Venugopal                           M        
+Visalatchi                          F        
+Yasodha                             F        
+
+
+MARRIAGES/COUPLES
+------------------------------------------------------------
+Ganapathi ❤️ Rukmani
+Jayalakshmi ❤️ Rajabadhar
+Kandaswamy ❤️ Devanayagi
+G Valliammal ❤️ C K Ramachandran
+Dhanalakshmi ❤️ Manoharan
+Tharabai ❤️ Natarajan
+Jagadeesan ❤️ Gajalakshmi
+T K Shanmuga Sundaram ❤️ C R Sharmila Devi
+K R Balaji ❤️ Sangeetha
+Subiksha Sundar ❤️ Dhyaneshwaran T
+Karthikeyan ❤️ Sasirekha
+Devanand ❤️ Kiruthiga
+Nithyanandi ❤️ Ramesh
+Prabhakaran ❤️ Jayanthi
+Nivedha ❤️ Mahendhar
+Sanjana ❤️ Bhuvanesh
+Nithyanandan ❤️ Usha Rani
+Mohan Rangan ❤️ Hema
+Masilamani ❤️ Akkamma
+Datchinamoorthy ❤️ Vanadatchi
+Visalatchi ❤️ Sundaramoorthy
+Muthulakshmi ❤️ Rajabadhar
+Ganesan ❤️ Sugantha
+Malarvizhi ❤️ Chandran
+Kannan ❤️ Sowmya
+
+
+PARENT-CHILD RELATIONSHIPS
+------------------------------------------------------------
+Akkamma → Deivanai
+C K Ramachandran → C R Sharmila Devi, K R Balaji
+C R Sharmila Devi → Keerthivasan S, Subiksha Sundar
+Chandran → Kannan
+Datchinamoorthy → Amul, Parimala, Venugopal, Yasodha
+Deivanai → Gandhi, Karpagam, Maadhu, Mahalakshmi, Sekar
+Devanand → Lathika
+Devanayagi → Nithyanandi, Prabhakaran
+Dhanalakshmi → Devanand, Karthikeyan
+Dhanammal → Datchinamoorthy, Ganapathi, Karpagavalli, Masilamani
+G Valliammal → C R Sharmila Devi, K R Balaji
+Gajalakshmi → Velmurugan
+Ganapathi → Dhanalakshmi, G Valliammal, Jagadeesan, Jayalakshmi, Kandaswamy, Tharabai
+Ganesan → Balaji Ganesan, Sangeetha
+Hema → Vaishali, Vaishnavi
+Jagadeesan → Velmurugan
+Jayalakshmi → Malarvizhi, Nithyanandan
+Jayanthi → Sanjana
+K R Balaji → Smitha B, Sudharsan B
+Kandaswamy → Nithyanandi, Prabhakaran
+Kannan → Sripaadh
+Karpagavalli → Kamala, Muthulakshmi, Visalatchi
+Karthikeyan → Pranav, Prithviraj
+Kiruthiga → Lathika
+Kuppuswamy → Datchinamoorthy, Ganapathi, Karpagavalli, Masilamani
+Mahendhar → Imayaa
+Malarvizhi → Kannan
+Manoharan → Devanand, Karthikeyan
+Masilamani → Deivanai
+Mohan Rangan → Vaishali, Vaishnavi
+Muthulakshmi → Ganesan
+Natarajan → Mohan Rangan, Saravanan
+Nithyanandan → Bharathi
+Nithyanandi → Nivedha, Preetha
+Nivedha → Imayaa
+Prabhakaran → Sanjana
+Rajabadhar → Ganesan, Malarvizhi, Nithyanandan
+Ramesh → Nivedha, Preetha
+Rukmani → Dhanalakshmi, G Valliammal, Jagadeesan, Jayalakshmi, Kandaswamy, Tharabai
+Sangeetha → Smitha B, Sudharsan B
+Sasirekha → Pranav, Prithviraj
+Sowmya → Sripaadh
+Sugantha → Balaji Ganesan, Sangeetha
+Sundaramoorthy → Mohanavelu
+T K Shanmuga Sundaram → Keerthivasan S, Subiksha Sundar
+Tharabai → Mohan Rangan, Saravanan
+Usha Rani → Bharathi
+Vanadatchi → Amul, Parimala, Venugopal, Yasodha
+Visalatchi → Mohanavelu
+
+============================================================
+END OF DATA
+============================================================

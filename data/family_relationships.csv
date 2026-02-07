@@ -1,0 +1,126 @@
+Relationship Type,Person 1,Person 2
+Spouse,Ganapathi,Rukmani
+Spouse,Jayalakshmi,Rajabadhar
+Spouse,Kandaswamy,Devanayagi
+Spouse,G Valliammal,C K Ramachandran
+Spouse,Dhanalakshmi,Manoharan
+Spouse,Tharabai,Natarajan
+Spouse,Jagadeesan,Gajalakshmi
+Spouse,T K Shanmuga Sundaram,C R Sharmila Devi
+Spouse,K R Balaji,Sangeetha
+Spouse,Subiksha Sundar,Dhyaneshwaran T
+Spouse,Karthikeyan,Sasirekha
+Spouse,Devanand,Kiruthiga
+Spouse,Nithyanandi,Ramesh
+Spouse,Prabhakaran,Jayanthi
+Spouse,Nivedha,Mahendhar
+Spouse,Sanjana,Bhuvanesh
+Spouse,Nithyanandan,Usha Rani
+Spouse,Mohan Rangan,Hema
+Spouse,Masilamani,Akkamma
+Spouse,Datchinamoorthy,Vanadatchi
+Spouse,Visalatchi,Sundaramoorthy
+Spouse,Muthulakshmi,Rajabadhar
+Spouse,Ganesan,Sugantha
+Spouse,Malarvizhi,Chandran
+Spouse,Kannan,Sowmya
+Parent-Child,Ganapathi,Jayalakshmi
+Parent-Child,Ganapathi,Kandaswamy
+Parent-Child,Ganapathi,G Valliammal
+Parent-Child,Ganapathi,Dhanalakshmi
+Parent-Child,Ganapathi,Tharabai
+Parent-Child,Ganapathi,Jagadeesan
+Parent-Child,Rukmani,Jayalakshmi
+Parent-Child,Rukmani,Kandaswamy
+Parent-Child,Rukmani,G Valliammal
+Parent-Child,Rukmani,Dhanalakshmi
+Parent-Child,Rukmani,Tharabai
+Parent-Child,Rukmani,Jagadeesan
+Parent-Child,G Valliammal,C R Sharmila Devi
+Parent-Child,C K Ramachandran,C R Sharmila Devi
+Parent-Child,T K Shanmuga Sundaram,Keerthivasan S
+Parent-Child,T K Shanmuga Sundaram,Subiksha Sundar
+Parent-Child,C R Sharmila Devi,Keerthivasan S
+Parent-Child,C R Sharmila Devi,Subiksha Sundar
+Parent-Child,G Valliammal,K R Balaji
+Parent-Child,C K Ramachandran,K R Balaji
+Parent-Child,K R Balaji,Sudharsan B
+Parent-Child,K R Balaji,Smitha B
+Parent-Child,Sangeetha,Sudharsan B
+Parent-Child,Sangeetha,Smitha B
+Parent-Child,Manoharan,Karthikeyan
+Parent-Child,Dhanalakshmi,Karthikeyan
+Parent-Child,Dhanalakshmi,Devanand
+Parent-Child,Manoharan,Devanand
+Parent-Child,Karthikeyan,Prithviraj
+Parent-Child,Sasirekha,Prithviraj
+Parent-Child,Karthikeyan,Pranav
+Parent-Child,Sasirekha,Pranav
+Parent-Child,Devanand,Lathika
+Parent-Child,Kiruthiga,Lathika
+Parent-Child,Kandaswamy,Nithyanandi
+Parent-Child,Devanayagi,Nithyanandi
+Parent-Child,Kandaswamy,Prabhakaran
+Parent-Child,Devanayagi,Prabhakaran
+Parent-Child,Ramesh,Nivedha
+Parent-Child,Nithyanandi,Nivedha
+Parent-Child,Nithyanandi,Preetha
+Parent-Child,Ramesh,Preetha
+Parent-Child,Nivedha,Imayaa
+Parent-Child,Mahendhar,Imayaa
+Parent-Child,Prabhakaran,Sanjana
+Parent-Child,Jayanthi,Sanjana
+Parent-Child,Jagadeesan,Velmurugan
+Parent-Child,Gajalakshmi,Velmurugan
+Parent-Child,Jayalakshmi,Malarvizhi
+Parent-Child,Rajabadhar,Malarvizhi
+Parent-Child,Jayalakshmi,Nithyanandan
+Parent-Child,Rajabadhar,Nithyanandan
+Parent-Child,Nithyanandan,Bharathi
+Parent-Child,Usha Rani,Bharathi
+Parent-Child,Tharabai,Saravanan
+Parent-Child,Natarajan,Saravanan
+Parent-Child,Tharabai,Mohan Rangan
+Parent-Child,Natarajan,Mohan Rangan
+Parent-Child,Mohan Rangan,Vaishnavi
+Parent-Child,Hema,Vaishnavi
+Parent-Child,Mohan Rangan,Vaishali
+Parent-Child,Hema,Vaishali
+Parent-Child,Kuppuswamy,Ganapathi
+Parent-Child,Dhanammal,Ganapathi
+Parent-Child,Kuppuswamy,Masilamani
+Parent-Child,Dhanammal,Masilamani
+Parent-Child,Kuppuswamy,Datchinamoorthy
+Parent-Child,Dhanammal,Datchinamoorthy
+Parent-Child,Kuppuswamy,Karpagavalli
+Parent-Child,Dhanammal,Karpagavalli
+Parent-Child,Masilamani,Deivanai
+Parent-Child,Akkamma,Deivanai
+Parent-Child,Datchinamoorthy,Venugopal
+Parent-Child,Vanadatchi,Venugopal
+Parent-Child,Datchinamoorthy,Yasodha
+Parent-Child,Vanadatchi,Yasodha
+Parent-Child,Datchinamoorthy,Parimala
+Parent-Child,Vanadatchi,Parimala
+Parent-Child,Datchinamoorthy,Amul
+Parent-Child,Vanadatchi,Amul
+Parent-Child,Karpagavalli,Visalatchi
+Parent-Child,Karpagavalli,Kamala
+Parent-Child,Karpagavalli,Muthulakshmi
+Parent-Child,Muthulakshmi,Ganesan
+Parent-Child,Rajabadhar,Ganesan
+Parent-Child,Visalatchi,Mohanavelu
+Parent-Child,Sundaramoorthy,Mohanavelu
+Parent-Child,Ganesan,Balaji Ganesan
+Parent-Child,Sugantha,Balaji Ganesan
+Parent-Child,Ganesan,Sangeetha
+Parent-Child,Sugantha,Sangeetha
+Parent-Child,Malarvizhi,Kannan
+Parent-Child,Chandran,Kannan
+Parent-Child,Kannan,Sripaadh
+Parent-Child,Sowmya,Sripaadh
+Parent-Child,Deivanai,Gandhi
+Parent-Child,Deivanai,Sekar
+Parent-Child,Deivanai,Maadhu
+Parent-Child,Deivanai,Karpagam
+Parent-Child,Deivanai,Mahalakshmi
